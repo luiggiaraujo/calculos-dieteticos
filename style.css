@@ -1,0 +1,218 @@
+/* --- ESTRUTURA E LAYOUT --- */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Cinza claro de fundo */
+}
+
+#app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Painel Lateral */
+#sidebar {
+    width: 150px;
+    background-color: #000;
+    color: f0f0f0;
+    padding: 20px;
+    box-shadow: 5px 0 20px #000;
+    flex-shrink: 0;
+}
+
+#sidebar h2 {
+    text-align: center;
+    margin-top: 0;
+    color: #f0f0f0;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar li {
+    margin-bottom: 10px;
+}
+
+#sidebar a {
+    text-decoration: none;
+    color: #eee;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#sidebar a:hover {
+    background-color: #555;
+}
+
+#sidebar a.active {
+    background-color: #2e852a; /* Verde destaque */
+    font-weight: bold;
+}
+
+/* Área de Conteúdo */
+#content-area {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+/* Esconde todas as telas por padrão */
+.tela {
+    display: none;
+}
+
+/* --- ESTILOS GERAIS DE INPUTS --- */
+.configuracao-dieta,
+.macro-input-group {
+    margin-bottom: 20px;
+}
+
+.configuracao-dieta label,
+.macro-input-group label {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+/* Alinhamento específico para labels das telas 2 e 3 */
+.macro-input-group label {
+    display: inline-block;
+    width: 180px; 
+}
+
+/* Estilo unificado para todos os inputs de número */
+input[type="number"] {
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 2px solid #2e852a;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    color: #000;
+    box-sizing: border-box;
+    width: 200px; 
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #177425;
+    box-shadow: 0 0 5px rgba(46, 133, 42, 0.4);
+}
+
+/* Remove setas dos inputs number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Estilos dos Checkboxes */
+input[type="checkbox"] {
+    accent-color: #2e852a;
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+/* Estilos do Seletor de Foco */
+#periodo-foco {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#periodo-foco h3 {
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+#select-periodo {
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 2px solid #2e852a;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    color: #000;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232e852a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 35px;
+}
+
+/* Estilos Unificados dos Botões */
+#btn-calcular,
+#btn-classificar,
+#btn-calcular-ptn {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #2e852a;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#btn-calcular:hover,
+#btn-classificar:hover,
+#btn-calcular-ptn:hover {
+    background-color: #177425;
+}
+
+/* -----------------------------------------
+   ESTILOS DOS RESULTADOS (Listas)
+   -----------------------------------------
+*/
+
+#resultados,
+#resultados-classificacao,
+#resultados-tela3 {
+    margin-top: 20px;
+}
+
+/* Remove bolinhas e recuo padrão de TODAS as listas */
+#lista-resultados,
+#lista-classificacao,
+#lista-resultados-tela3 {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* ESTILO UNIFICADO DOS ITENS
+   Combina: Fundo da Tela 1 (#bcf6be) + Borda da Tela 2/3 (border-left) 
+*/
+#lista-resultados li,
+#lista-classificacao li,
+#lista-resultados-tela3 li {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding: 12px; /* Mais espaço interno */
+    border-radius: 4px;
+    
+    /* O Fundo Verde Claro da Tela 1 */
+    background-color: #bcf6be; 
+    
+    /* A Borda Lateral da Tela 2 e 3 */
+    border-left: 5px solid #2e852a;
+    box-shadow: 2px 2px 5px #000;
+}
+
+/* Estilo específico para o TOTAL na Tela 1 */
+#lista-resultados li.total {
+    margin-top: 15px;
+    font-weight: bold;
+    /* Como agora ele tem o fundo verde e borda, não precisamos da linha 'border-top' antiga */
+    border-top: none; 
+}
