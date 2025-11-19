@@ -1,11 +1,7 @@
 /* Aguarda o carregamento completo do DOM antes de executar o script */
 document.addEventListener('DOMContentLoaded', function () {
 
-    /*
-    ==================================================
-    |                CONSTANTES E REGRAS               |
-    ==================================================
-    */
+    /* Constantes e Regras Base */
 
     const regrasBase = [
         { id: 'ref-cafe', nome: 'Café da Manhã', min: 15, max: 20 },
@@ -24,12 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const gruposLanches = ['ref-lanche-manha', 'ref-lanche-tarde'];
     const gruposPrincipais = ['ref-cafe', 'ref-almoco', 'ref-jantar'];
-
-    /*
-    ==================================================
-    |              SELETORES DE ELEMENTOS (DOM)        |
-    ==================================================
-    */
 
     // Navegação e Telas
     const navLinks = document.querySelectorAll('.nav-link');
@@ -61,11 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputTela3Peso = document.getElementById('tela3-peso');
     const listaResultadosTela3 = document.getElementById('lista-resultados-tela3');
 
-    /*
-    ==================================================
-    |        LÓGICA DE UI (Checkboxes e Visibilidade)  |
-    ==================================================
-    */
+    // Checkboxes e Visibilidade
 
     function verificarRefeicoes() {
         const refeicoesMarcadas = Array.from(checkboxes).filter(cb => cb.checked);
@@ -97,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleTodas() {
         const algumaNaoMarcada = Array.from(checkboxes).some(cb => !cb.checked);
-        const novoEstado = algumaNaoMarcada; 
+        const novoEstado = algumaNaoMarcada;
 
         checkboxes.forEach(checkbox => {
             checkbox.checked = novoEstado;
@@ -105,11 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         verificarRefeicoes();
     }
 
-    /*
-    ==================================================
-    |             LÓGICA PRINCIPAL (TELA 1)            |
-    ==================================================
-    */
+    // Lógica Principal Tela 1: Calculadora
 
     function calcularDieta() {
         const kcalTotal = parseFloat(kcalInput.value);
@@ -128,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const focoSelecionado = selectPeriodo.value;
-        listaResultados.innerHTML = ''; 
+        listaResultados.innerHTML = '';
 
         let sugestaoCalculada = regrasBase
             .filter(regra => refeicoesMarcadas.includes(regra.id))
@@ -138,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const ceia = sugestaoCalculada.find(r => r.id === 'ref-ceia');
         if (ceia) {
             ceia.sugestao = 5.0;
-            percentTotalDisponivel = 95.0; 
+            percentTotalDisponivel = 95.0;
         }
 
         const refeicoesFoco = sugestaoCalculada.filter(r =>
@@ -149,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
         const sumMaxNonCeia = refeicoesFoco.reduce((acc, r) => acc + r.max, 0) +
-                              refeicoesNonFoco.reduce((acc, r) => acc + r.max, 0);
+            refeicoesNonFoco.reduce((acc, r) => acc + r.max, 0);
 
         if (sumMaxNonCeia < percentTotalDisponivel) {
             // Cenário 1: Déficit
@@ -178,13 +160,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const removerExcesso = (lista, excesso) => {
                 let excessoRestante = excesso;
                 for (const r of lista) {
-                    if (excessoRestante <= 0.001) break; 
-                    const espacoParaRemover = r.max - r.min; 
+                    if (excessoRestante <= 0.001) break;
+                    const espacoParaRemover = r.max - r.min;
                     const remover = Math.min(excessoRestante, espacoParaRemover);
                     r.sugestao = r.max - remover;
                     excessoRestante -= remover;
                 }
-                return excessoRestante; 
+                return excessoRestante;
             };
 
             excessoParaRemover = removerExcesso(lanchesNonFoco, excessoParaRemover);
@@ -195,8 +177,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 excessoParaRemover = removerExcesso(refeicoesFoco, excessoParaRemover);
             }
         }
-        
-        // Renderiza resultados da Tela 1
+
+        // Renderiza Resultados da Tela 1
         let totalSugerido = 0;
         refeicoesMarcadas.forEach(id => {
             const li = document.createElement('li');
@@ -206,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const { sugestao } = calculo;
             const kcalSugestao = (kcalTotal * (sugestao / 100)).toFixed(0);
 
-            let textoBase = (min === max) ? 
-                `${nome} (${min}%):` : 
+            let textoBase = (min === max) ?
+                `${nome} (${min}%):` :
                 `${nome} (${min}% a ${max}%):`;
 
             li.textContent = `${textoBase} --> Sugestão: ${sugestao.toFixed(1)}% - ${kcalSugestao} kcal`;
@@ -221,11 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
         listaResultados.appendChild(liTotal);
     }
 
-    /*
-    ==================================================
-    |             LÓGICA PRINCIPAL (TELA 2)            |
-    ==================================================
-    */
+    // Lógica Principal Tela 2: Classificação
 
     function classificarDieta() {
         listaClassificacao.innerHTML = '';
@@ -234,25 +212,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const cho = parseFloat(inputCho.value) || 0;
         const lip = parseFloat(inputLip.value) || 0;
 
+        // Funções de Classificação dos Nutrientes
+
         function getClassificacaoProteina(valor) {
-            if (valor < 10) return "Hipoproteica (pouca proteína)";
+            if (valor < 10 && valor > 0) return "Hipoproteica (pouca proteína)";
             if (valor >= 10 && valor <= 20) return "Normoproteica (normal)";
-            if (valor > 20) return "Hiperproteica (rica em proteína)";
-            return "Valor inválido";
+            if (valor > 20) return "Hiperproteica (muita proteína)";
+            return "Sem proteína";
         }
 
         function getClassificacaoCarboidrato(valor) {
-            if (valor < 45) return "Hipoglicídica (pouco carboidrato)";
+            if (valor < 45 && valor > 0) return "Hipoglicídica (pouco carboidrato)";
             if (valor >= 45 && valor <= 60) return "Normoglicídica (normal)";
             if (valor > 60) return "Hiperglicídica (muito carboidrato)";
-            return "Valor inválido";
+            return "Sem carboidrato";
         }
 
         function getClassificacaoGordura(valor) {
-            if (valor < 20) return "Hipolipídica (pouca gordura)";
+            if (valor < 20 && valor > 0) return "Hipolipídica (pouca gordura)";
             if (valor >= 20 && valor <= 30) return "Normolipídica (normal)";
-            if (valor > 30) return "Hiperlipídica (rica em gordura)";
-            return "Valor inválido";
+            if (valor > 30) return "Hiperlipídica (muita gordura)";
+            return "Sem gordura";
         }
 
         const resultados = [
@@ -261,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `Gordura: ${getClassificacaoGordura(lip)}`
         ];
 
+        // Renderiza Resultados da Tela 2
         resultados.forEach(texto => {
             const li = document.createElement('li');
             li.textContent = texto;
@@ -268,11 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /*
-    ==================================================
-    |             LÓGICA PRINCIPAL (TELA 3)            |
-    ==================================================
-    */
+    // Lógica Principal Tela 3: Proporção de Proteína
 
     function calcularProporcaoProteina() {
         listaResultadosTela3.innerHTML = '';
@@ -286,6 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Cálculos
         const gDiaProteina = gKg * peso;
         const y = gDiaProteina * 4; // Kcal da proteína
         const x = (y * 100) / kcal; // % da proteína
@@ -296,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `% de Kcal da Proteína: ${x.toFixed(1)} %`
         ];
 
+        // Renderiza Resultados da Tela 3
         resultados.forEach(texto => {
             const li = document.createElement('li');
             li.textContent = texto;
@@ -303,19 +282,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /*
-    ==================================================
-    |             LÓGICA DE NAVEGAÇÃO (TELAS)        |
-    ==================================================
-    */
+    // Lógica de Navegação entre Telas
 
     function trocarTela(event) {
-        event.preventDefault(); 
+        event.preventDefault();
         const linkClicado = event.currentTarget;
         const targetId = linkClicado.getAttribute('data-target');
         const telaAlvo = document.getElementById(targetId);
 
-        if (!telaAlvo) return; 
+        if (!telaAlvo) return;
 
         telas.forEach(tela => { tela.style.display = 'none'; });
         telaAlvo.style.display = 'block';
@@ -323,11 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
         linkClicado.classList.add('active');
     }
 
-    /*
-    ==================================================
-    |              INICIALIZAÇÃO E LISTENERS           |
-    ==================================================
-    */
+    // Inicialização dos Listeners
 
     // --- Listeners da Tela 1 ---
     btnCalcular.addEventListener('click', calcularDieta);
